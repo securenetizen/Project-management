@@ -146,9 +146,9 @@ app.get('/api/projects', authenticateToken, (req, res) => {
 });
 
 app.post('/api/projects', authenticateToken, (req, res) => {
-    const { id, donor, contractStart, contractEnd, totalBudget, currency, status } = req.body;
-    db.run('INSERT INTO projects (id, donor, contractStart, contractEnd, totalBudget, currency, status) VALUES (?, ?, ?, ?, ?, ?, ?)',
-        [id || uuidv4(), donor, contractStart, contractEnd, totalBudget, currency, status],
+    const { id, donor, contractStart, contractEnd, totalBudget, currency, status, reportingQuarterly, reportingYearly, reportingFinal } = req.body;
+    db.run('INSERT INTO projects (id, donor, contractStart, contractEnd, totalBudget, currency, status, reportingQuarterly, reportingYearly, reportingFinal) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [id || uuidv4(), donor, contractStart, contractEnd, totalBudget, currency, status, reportingQuarterly, reportingYearly, reportingFinal],
         function (err) {
             if (err) return res.status(500).json({ error: err.message });
             res.status(201).json(req.body);
@@ -156,9 +156,9 @@ app.post('/api/projects', authenticateToken, (req, res) => {
 });
 
 app.put('/api/projects/:id', authenticateToken, (req, res) => {
-    const { donor, contractStart, contractEnd, totalBudget, currency, status } = req.body;
-    db.run('UPDATE projects SET donor = ?, contractStart = ?, contractEnd = ?, totalBudget = ?, currency = ?, status = ? WHERE id = ?',
-        [donor, contractStart, contractEnd, totalBudget, currency, status, req.params.id],
+    const { donor, contractStart, contractEnd, totalBudget, currency, status, reportingQuarterly, reportingYearly, reportingFinal } = req.body;
+    db.run('UPDATE projects SET donor = ?, contractStart = ?, contractEnd = ?, totalBudget = ?, currency = ?, status = ?, reportingQuarterly = ?, reportingYearly = ?, reportingFinal = ? WHERE id = ?',
+        [donor, contractStart, contractEnd, totalBudget, currency, status, reportingQuarterly, reportingYearly, reportingFinal, req.params.id],
         function (err) {
             if (err) return res.status(500).json({ error: err.message });
             res.json(req.body);

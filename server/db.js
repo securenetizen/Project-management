@@ -25,7 +25,10 @@ const initDb = () => {
         contractEnd TEXT,
         totalBudget REAL,
         currency TEXT,
-        status TEXT
+        status TEXT,
+        reportingQuarterly TEXT,
+        reportingYearly TEXT,
+        reportingFinal TEXT
       )`);
 
             // Activities Table

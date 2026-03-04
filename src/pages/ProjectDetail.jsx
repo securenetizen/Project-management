@@ -167,6 +167,12 @@ export default function ProjectDetail({
                 >
                     Documents ({project.attachments?.length || 0})
                 </button>
+                <button
+                    className={`tab ${activeTab === 'reporting' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('reporting')}
+                >
+                    Reporting Schedule
+                </button>
             </div>
 
             {/* Activities Tab */}
@@ -438,6 +444,34 @@ export default function ProjectDetail({
                     }}
                     onClose={() => { setShowDisbursementForm(false); setEditDisbursement(null); }}
                 />
+            )}
+            {/* Reporting Schedule Tab */}
+            {activeTab === 'reporting' && (
+                <div className="slide-in">
+                    <div className="reporting-schedule-card">
+                        <div className="reporting-item">
+                            <div className="reporting-icon">📅</div>
+                            <div className="reporting-content">
+                                <strong>Quarterly Reporting Deadline</strong>
+                                <p>{project.reportingQuarterly ? formatDate(project.reportingQuarterly) : 'Not scheduled'}</p>
+                            </div>
+                        </div>
+                        <div className="reporting-item" style={{ marginTop: '16px' }}>
+                            <div className="reporting-icon">📆</div>
+                            <div className="reporting-content">
+                                <strong>Yearly Reporting Deadline</strong>
+                                <p>{project.reportingYearly ? formatDate(project.reportingYearly) : 'Not scheduled'}</p>
+                            </div>
+                        </div>
+                        <div className="reporting-item" style={{ marginTop: '16px' }}>
+                            <div className="reporting-icon">📋</div>
+                            <div className="reporting-content">
+                                <strong>Final Reporting Deadline</strong>
+                                <p>{project.reportingFinal ? formatDate(project.reportingFinal) : 'Not scheduled'}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             )}
         </div>
     );

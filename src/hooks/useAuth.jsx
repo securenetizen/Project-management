@@ -2,7 +2,8 @@ import { createContext, useContext, useState, useCallback, useEffect } from 'rea
 
 const AuthContext = createContext(null);
 
-const API_BASE = 'http://localhost:5001/api';
+const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const API_BASE = isLocal ? 'http://localhost:5001/api' : '/api';
 const TOKEN_KEY = 'pm_token';
 const USER_KEY = 'pm_user';
 

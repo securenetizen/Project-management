@@ -8,6 +8,9 @@ export default function ProjectForm({ project, onSave, onClose }) {
         totalBudget: project?.totalBudget || '',
         currency: project?.currency || 'USD',
         status: project?.status || 'Not Started',
+        reportingQuarterly: project?.reportingQuarterly || '',
+        reportingYearly: project?.reportingYearly || '',
+        reportingFinal: project?.reportingFinal || '',
     });
 
     const handleChange = (e) => {
@@ -99,6 +102,41 @@ export default function ProjectForm({ project, onSave, onClose }) {
                                 <option value="Completed">Completed</option>
                                 <option value="Terminated">Terminated</option>
                             </select>
+                        </div>
+                        <div className="form-divider" style={{ margin: '20px 0', borderTop: '1px solid var(--border-color)', paddingTop: '10px' }}>
+                            <h4 style={{ fontSize: '0.875rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Reporting Schedule</h4>
+                        </div>
+                        <div className="form-row">
+                            <div className="form-group">
+                                <label className="form-label">Quarterly Reporting</label>
+                                <input
+                                    className="form-input"
+                                    type="date"
+                                    name="reportingQuarterly"
+                                    value={form.reportingQuarterly}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label className="form-label">Yearly Reporting</label>
+                                <input
+                                    className="form-input"
+                                    type="date"
+                                    name="reportingYearly"
+                                    value={form.reportingYearly}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                        </div>
+                        <div className="form-group">
+                            <label className="form-label">Final Reporting</label>
+                            <input
+                                className="form-input"
+                                type="date"
+                                name="reportingFinal"
+                                value={form.reportingFinal}
+                                onChange={handleChange}
+                            />
                         </div>
                     </div>
                     <div className="modal-footer">
