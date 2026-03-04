@@ -405,9 +405,17 @@ export default function ProjectDetail({
             {showProjectForm && (
                 <ProjectForm
                     project={project}
-                    onSave={(data) => {
-                        onUpdateProject(project.id, data);
-                        setShowProjectForm(false);
+                    onSave={async (data) => {
+                        try {
+                            const result = await onUpdateProject(project.id, data);
+                            if (result) {
+                                setShowProjectForm(false);
+                            } else {
+                                alert('Failed to update project. Please check your connection.');
+                            }
+                        } catch (err) {
+                            alert('An error occurred while updating the project.');
+                        }
                     }}
                     onClose={() => setShowProjectForm(false)}
                 />

@@ -186,9 +186,17 @@ export default function Dashboard({ projects, loading, onAddProject, onUpdatePro
             {/* Add Project Modal */}
             {showForm && (
                 <ProjectForm
-                    onSave={(data) => {
-                        onAddProject(data);
-                        setShowForm(false);
+                    onSave={async (data) => {
+                        try {
+                            const result = await onAddProject(data);
+                            if (result) {
+                                setShowForm(false);
+                            } else {
+                                alert('Failed to create project. Please check your connection.');
+                            }
+                        } catch (err) {
+                            alert('An error occurred while creating the project.');
+                        }
                     }}
                     onClose={() => setShowForm(false)}
                 />
