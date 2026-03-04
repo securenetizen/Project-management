@@ -67,6 +67,17 @@ const initDb = () => {
         FOREIGN KEY (projectId) REFERENCES projects (id) ON DELETE CASCADE
       )`);
 
+            // Reporting Schedules Table
+            db.run(`CREATE TABLE IF NOT EXISTS reporting_schedules (
+        id TEXT PRIMARY KEY,
+        projectId TEXT,
+        period TEXT,
+        type TEXT,
+        deadline TEXT,
+        status TEXT,
+        FOREIGN KEY (projectId) REFERENCES projects (id) ON DELETE CASCADE
+      )`);
+
             // Create default admin if not exists
             const adminId = 'admin-001';
             const adminPass = bcrypt.hashSync('admin123', 10);

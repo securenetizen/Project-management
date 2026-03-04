@@ -102,6 +102,9 @@ function AuthenticatedApp() {
                                 onUploadFile={uploadFile}
                                 onDownloadFile={downloadFile}
                                 onDeleteFile={deleteFile}
+                                onAddReport={addReport}
+                                onUpdateReport={updateReport}
+                                onDeleteReport={deleteReport}
                             />
                         }
                     />

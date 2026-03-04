@@ -127,7 +127,7 @@ app.get('/api/projects', authenticateToken, (req, res) => {
     db.all('SELECT * FROM projects', [], async (err, projects) => {
         if (err) return res.status(500).json({ error: err.message });
 
-        // Fetch activities, disbursements, and attachments for each project
+        // Fetch activities, disbursements, attachments, and reporting schedules for each project
         const fullProjects = await Promise.all(projects.map(async (p) => {
             const activities = await new Promise((resolve) => {
                 db.all('SELECT * FROM activities WHERE projectId = ?', [p.id], (err, rows) => resolve(rows || []));
@@ -138,7 +138,10 @@ app.get('/api/projects', authenticateToken, (req, res) => {
             const attachments = await new Promise((resolve) => {
                 db.all('SELECT * FROM attachments WHERE projectId = ?', [p.id], (err, rows) => resolve(rows || []));
             });
-            return { ...p, activities, disbursements, attachments };
+            const reportingSchedules = await new Promise((resolve) => {
+                db.all('SELECT * FROM reporting_schedules WHERE projectId = ?', [p.id], (err, rows) => resolve(rows || []));
+            });
+            return { ...p, activities, disbursements, attachments, reportingSchedules };
         }));
 
         res.json(fullProjects);
@@ -146,9 +149,9 @@ app.get('/api/projects', authenticateToken, (req, res) => {
 });
 
 app.post('/api/projects', authenticateToken, (req, res) => {
-    const { id, donor, contractStart, contractEnd, totalBudget, currency, status, reportingQuarterly, reportingYearly, reportingFinal } = req.body;
-    db.run('INSERT INTO projects (id, donor, contractStart, contractEnd, totalBudget, currency, status, reportingQuarterly, reportingYearly, reportingFinal) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-        [id || uuidv4(), donor, contractStart, contractEnd, totalBudget, currency, status, reportingQuarterly, reportingYearly, reportingFinal],
+    const { id, donor, contractStart, contractEnd, totalBudget, currency, status } = req.body;
+    db.run('INSERT INTO projects (id, donor, contractStart, contractEnd, totalBudget, currency, status) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        [id || uuidv4(), donor, contractStart, contractEnd, totalBudget, currency, status],
         function (err) {
             if (err) return res.status(500).json({ error: err.message });
             res.status(201).json(req.body);
@@ -156,9 +159,9 @@ app.post('/api/projects', authenticateToken, (req, res) => {
 });
 
 app.put('/api/projects/:id', authenticateToken, (req, res) => {
-    const { donor, contractStart, contractEnd, totalBudget, currency, status, reportingQuarterly, reportingYearly, reportingFinal } = req.body;
-    db.run('UPDATE projects SET donor = ?, contractStart = ?, contractEnd = ?, totalBudget = ?, currency = ?, status = ?, reportingQuarterly = ?, reportingYearly = ?, reportingFinal = ? WHERE id = ?',
-        [donor, contractStart, contractEnd, totalBudget, currency, status, reportingQuarterly, reportingYearly, reportingFinal, req.params.id],
+    const { donor, contractStart, contractEnd, totalBudget, currency, status } = req.body;
+    db.run('UPDATE projects SET donor = ?, contractStart = ?, contractEnd = ?, totalBudget = ?, currency = ?, status = ? WHERE id = ?',
+        [donor, contractStart, contractEnd, totalBudget, currency, status, req.params.id],
         function (err) {
             if (err) return res.status(500).json({ error: err.message });
             res.json(req.body);
@@ -167,6 +170,35 @@ app.put('/api/projects/:id', authenticateToken, (req, res) => {
 
 app.delete('/api/projects/:id', authenticateToken, (req, res) => {
     db.run('DELETE FROM projects WHERE id = ?', [req.params.id], function (err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true });
+    });
+});
+
+// --- Reporting Schedule Endpoints ---
+
+app.post('/api/reports', authenticateToken, (req, res) => {
+    const { id, projectId, period, type, deadline, status } = req.body;
+    db.run('INSERT INTO reporting_schedules (id, projectId, period, type, deadline, status) VALUES (?, ?, ?, ?, ?, ?)',
+        [id || uuidv4(), projectId, period, type, deadline, status || 'Pending'],
+        function (err) {
+            if (err) return res.status(500).json({ error: err.message });
+            res.status(201).json(req.body);
+        });
+});
+
+app.put('/api/reports/:id', authenticateToken, (req, res) => {
+    const { period, type, deadline, status } = req.body;
+    db.run('UPDATE reporting_schedules SET period = ?, type = ?, deadline = ?, status = ? WHERE id = ?',
+        [period, type, deadline, status, req.params.id],
+        function (err) {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json(req.body);
+        });
+});
+
+app.delete('/api/reports/:id', authenticateToken, (req, res) => {
+    db.run('DELETE FROM reporting_schedules WHERE id = ?', [req.params.id], function (err) {
         if (err) return res.status(500).json({ error: err.message });
         res.json({ success: true });
     });
